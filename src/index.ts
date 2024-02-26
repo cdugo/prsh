@@ -19,7 +19,7 @@ app.use((err: Error, req: Request, res: Response) => {
     } else {
         // Handle generic errors
         console.error(err); // Log the error for debugging purposes
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
