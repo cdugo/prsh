@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import { Beast, Prisma } from '@prisma/client';
 import prisma from '../db/init';
 import {
@@ -32,15 +31,5 @@ export default class BeastModel {
         }
         // this won't ever get hit, but eslint doesn't like when its not here for some reason lol
         throw new UnknownError('An unexpected error occurred');
-    }
-
-    // TODO: Adopt new error handling
-    public static async getBeasts(req: Request, res: Response): Promise<void> {
-        try {
-            const beasts = await prisma.beast.findMany();
-            res.status(200).json(beasts);
-        } catch (error: unknown) {
-            throw new Error((error as Error).message);
-        }
     }
 }

@@ -15,13 +15,4 @@ export default class BeastController {
             }
         }
     }
-
-    public static async getBeasts(req: Request, res: Response): Promise<void> {
-        try {
-            const beasts = await BeastModel.getBeasts(req, res);
-            res.status(200).json(beasts);
-        } catch (error: unknown) {
-            res.status(500).json({ error: (error as Error).message });
-        }
-    }
 }
