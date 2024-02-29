@@ -87,6 +87,10 @@ export function handleDatabaseError(error: Prisma.PrismaClientKnownRequestError)
         const target = error.meta?.target?.join(', ');
         throw new BadRequestError(`${target} already exists`);
     }
+    case 'P2025': {
+        const target = error.meta?.target?.join(', ');
+        throw new NotFoundError(`${target} not found`);
+    }
     default:
         throw new UnknownError('An unexpected database error occurred');
     }
