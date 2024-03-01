@@ -7,7 +7,7 @@ require('express-async-errors');
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
