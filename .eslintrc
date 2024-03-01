@@ -4,6 +4,10 @@
     "plugins": [
       "@typescript-eslint"
     ],
+    "env": {
+        "node": true,
+        "jest": true
+    },
     "extends": [
         "airbnb-base",
         "plugin:import/typescript"
