@@ -4,9 +4,9 @@ import dotenv from 'dotenv';
 import BeastRoutes from './routes/beast';
 import { CustomError } from './models/errors';
 
-dotenv.config();
-
 require('express-async-errors');
+
+dotenv.config();
 
 const app = express();
 
