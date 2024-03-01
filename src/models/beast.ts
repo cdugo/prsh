@@ -34,8 +34,9 @@ export default class BeastModel {
      * @param id Id of the requested beast
      */
     public static async getBeastById(id: number): Promise<Beast | null> {
+        let beast;
         try {
-            const beast = await prisma.beast.findUnique({
+            beast = await prisma.beast.findUnique({
                 where: {
                     id,
                 },
@@ -53,15 +54,15 @@ export default class BeastModel {
                     },
                 },
             });
-            if (!beast) {
-                throw new NotFoundError(`Beast with id: ${id} does not exist.`);
-            }
-
-            return beast;
         } catch (error: unknown) {
             BeastModel.handleErrors(error);
         }
-        throw new UnknownError('An unexpected error occurred');
+
+        if (!beast) {
+            throw new NotFoundError(`Beast with id: ${id} does not exist.`);
+        }
+
+        return beast;
     }
 
     /**
@@ -88,29 +89,25 @@ export default class BeastModel {
         if (Object.keys(updateData).length === 0) {
             throw new Error('No updates provided');
         }
+
+        let beast;
         try {
-            const beast = await prisma.beast.update({
+            beast = await prisma.beast.update({
                 where: {
                     id,
                 },
                 data: updateData,
             });
-
-            // Might be unnecessary -> prisma throws an error if update fails because of where filter
-            if (!beast) {
-                throw new NotFoundError(`Beast with id: ${id} does not exist.`);
-            }
-
-            return beast;
         } catch (error: unknown) {
-            // I am doing this quick fix here, should be handled by errors file in the future
-            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-                throw new NotFoundError(`Beast with id: ${id} does not exist.`);
-            } else {
-                this.handleErrors(error);
-            }
+            this.handleErrors(error);
         }
-        throw new UnknownError('An unexpected error occurred');
+
+        // Might be unnecessary -> prisma throws an error if update fails because of where filter
+        if (!beast) {
+            throw new NotFoundError(`Beast with id: ${id} does not exist.`);
+        }
+
+        return beast;
     }
 
     /**
