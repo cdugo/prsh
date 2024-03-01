@@ -13,7 +13,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/beast', BeastRoutes);
+app.use('/beasts', BeastRoutes);
 
 app.use((err: Error, req: Request, res: Response) => {
     if (err instanceof CustomError) {
