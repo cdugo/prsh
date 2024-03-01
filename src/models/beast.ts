@@ -1,7 +1,8 @@
 import { Beast, Prisma } from '@prisma/client';
 import prisma from '../db/init';
 import {
-    UnknownError, UnprocessableEntityError, handleDatabaseError, isErrorWithTarget, NotFoundError,
+    handleDatabaseError, isErrorWithTarget,
+    NotFoundError, UnknownError, UnprocessableEntityError,
 } from './errors';
 
 /**
@@ -15,14 +16,12 @@ export default class BeastModel {
      */
     public static async create(gamerTag: string, email: string): Promise<Beast> {
         try {
-            const beast = await prisma.beast.create({
+            return await prisma.beast.create({
                 data: {
                     gamerTag,
                     email,
                 },
             });
-
-            return beast;
         } catch (error: unknown) {
             BeastModel.handleErrors(error);
         }
@@ -61,31 +60,6 @@ export default class BeastModel {
             return beast;
         } catch (error: unknown) {
             BeastModel.handleErrors(error);
-        }
-        throw new UnknownError('An unexpected error occurred');
-    }
-
-    /**
-     * Get a beast's friends by its id
-     * @param id The id of the beast
-     */
-    public static async getBeastFriends(id: number): Promise<Beast[] | null> {
-        try {
-            const beast = await prisma.beast.findUnique({
-                where: {
-                    id,
-                },
-                include: {
-                    beastieBros: true,
-                },
-            });
-            if (!beast) {
-                throw new NotFoundError(`Beast with id: ${id} does not exist.`);
-            }
-
-            return beast.beastieBros;
-        } catch (error: unknown) {
-            this.handleErrors(error);
         }
         throw new UnknownError('An unexpected error occurred');
     }

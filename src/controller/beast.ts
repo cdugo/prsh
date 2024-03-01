@@ -49,30 +49,6 @@ export default class BeastController {
     }
 
     /**
-     * Get a beast's friends by its id
-     * @param req the request which contains the id of the requested beast
-     * @param res the response which will contain the requested beast's friends
-     */
-    public static async getBeastFriends(req: Request, res: Response): Promise<void> {
-        let beast = null;
-        try {
-            const { id } = req.params;
-            if (!Number.isNaN(parseInt(id, 10))) {
-                beast = await BeastModel.getBeastFriends(parseInt(id, 10));
-            } else {
-                // Handle the case where id is not provided as a numerical string
-                // Need better error handling or sanitization here imo
-                res.status(400).json({ error: 'Invalid ID format' });
-            }
-            res.status(200).json({ message: 'Successfully retrieved', data: beast });
-        } catch (error: unknown) {
-            if (error instanceof CustomError) {
-                res.status(error.statusCode).json({ error: error.message });
-            }
-        }
-    }
-
-    /**
      * Updates a beast with the given (optional) gamerTag and (optional) email
      * @param req the request which contains the id of the beast to update, and the new gamerTag and email
      * @param res the response which will contain a message indicating the success of the update
@@ -86,10 +62,6 @@ export default class BeastController {
                 // Handle the case where id is not provided as a numerical string
                 // Need better error handling or sanitization here imo
                 res.status(400).json({ error: 'Invalid ID format' });
-            }
-
-            if (!gamerTag && !email) {
-                res.status(400).json({ error: 'Must provide at least one updated parameter' });
             }
 
             const beast = await
