@@ -41,7 +41,6 @@ export default class BeastModel {
                     id,
                 },
                 include: {
-                    beastieBros: true,
                     authoredPreesh: {
                         include: {
                             comments: true,
@@ -73,22 +72,7 @@ export default class BeastModel {
      */
     public static async updateBeast(id: number, gamerTag?: string, email?: string): Promise<Beast | null> {
         // Will only update with the fields that are provided
-        const updateData: { gamerTag?: string; email?: string; } = {};
-
-        if (gamerTag) {
-            updateData.gamerTag = gamerTag;
-        }
-
-        if (email) {
-            updateData.email = email;
-        }
-
-        // Short circuit if there is nothing to update
-        // tbh not really sure what error should be thrown here but def short circuit before accessing db
-        // so just doing this xD :P :3
-        if (Object.keys(updateData).length === 0) {
-            throw new Error('No updates provided');
-        }
+        const updateData = { gamerTag, email };
 
         let beast;
         try {
