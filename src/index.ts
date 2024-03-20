@@ -12,7 +12,7 @@ export const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/beasts', BeastRoutes);
+app.use('/beast', BeastRoutes);
 
 app.use((req: Request, res: Response) => {
     res.status(404).json({ error: 'Endpoint not found' });
