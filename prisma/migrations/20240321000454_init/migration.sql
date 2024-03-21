@@ -39,12 +39,6 @@ CREATE TABLE "Comment" (
 );
 
 -- CreateTable
-CREATE TABLE "_BeastieBros" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
--- CreateTable
 CREATE TABLE "_prees" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
@@ -55,12 +49,6 @@ CREATE UNIQUE INDEX "Beast_gamerTag_key" ON "Beast"("gamerTag");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Beast_email_key" ON "Beast"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_BeastieBros_AB_unique" ON "_BeastieBros"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_BeastieBros_B_index" ON "_BeastieBros"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_prees_AB_unique" ON "_prees"("A", "B");
@@ -79,12 +67,6 @@ ALTER TABLE "Comment" ADD CONSTRAINT "Comment_preeshId_fkey" FOREIGN KEY ("prees
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "Beast"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_BeastieBros" ADD CONSTRAINT "_BeastieBros_A_fkey" FOREIGN KEY ("A") REFERENCES "Beast"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_BeastieBros" ADD CONSTRAINT "_BeastieBros_B_fkey" FOREIGN KEY ("B") REFERENCES "Beast"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_prees" ADD CONSTRAINT "_prees_A_fkey" FOREIGN KEY ("A") REFERENCES "Beast"("id") ON DELETE CASCADE ON UPDATE CASCADE;

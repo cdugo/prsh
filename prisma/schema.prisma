@@ -17,8 +17,6 @@ model Beast {
   id                  Int       @id @default(autoincrement())
   gamerTag            String    @unique @db.VarChar(20)
   email               String    @unique
-  beastieBros         Beast[]   @relation("BeastieBros")
-  beastieBrosRelation Beast[]   @relation("BeastieBros")
   authoredPreesh      Preesh[]  @relation("authorId")
   receivedPreesh      Preesh[]  @relation("receiverId")
   prees               Preesh[]  @relation("prees")
