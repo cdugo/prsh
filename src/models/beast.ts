@@ -23,10 +23,8 @@ export default class BeastModel {
                 },
             });
         } catch (error: unknown) {
-            BeastModel.handleErrors(error);
+            throw BeastModel.handleErrors(error);
         }
-        // this won't ever get hit, but eslint doesn't like when its not here for some reason lol
-        throw new UnknownError('An unexpected error occurred');
     }
 
     /**
@@ -54,7 +52,7 @@ export default class BeastModel {
                 },
             });
         } catch (error: unknown) {
-            BeastModel.handleErrors(error);
+            throw BeastModel.handleErrors(error);
         }
 
         if (!beast) {
@@ -83,7 +81,7 @@ export default class BeastModel {
                 data: updateData,
             });
         } catch (error: unknown) {
-            this.handleErrors(error);
+            throw BeastModel.handleErrors(error);
         }
 
         // Might be unnecessary -> prisma throws an error if update fails because of where filter
