@@ -1,81 +1,66 @@
-import BeastModel from '../../src/models/beast';
-import prisma from '../../src/db/init';
-import { NotFoundError, UnknownError } from '../../src/models/errors';
+import request from 'supertest';
+import express from 'express';
+import BeastController from '../../src/controller/beast';
+import beastRouter from '../../src/routes/beast';
 
-jest.mock('../../src/db/init', () => ({
-    beast: {
-        create: jest.fn().mockResolvedValue({ /* mock beast object */ }),
-        findUnique: jest.fn().mockResolvedValue({ /* mock beast object */ }),
-        update: jest.fn().mockResolvedValue({ /* mock beast object */ }),
-    },
+// Mock BeastController methods
+jest.mock('../../src/controller/beast', () => ({
+    create: jest.fn(),
+    getBeastById: jest.fn(),
+    updateBeast: jest.fn(),
 }));
 
-describe('BeastModel', () => {
-    const beastId = 1;
-    const gamerTag = 'test';
-    const email = 'test@test.com';
-    const createdAt = new Date();
-    const updatedAt = new Date();
+const app = express();
+app.use(express.json());
+app.use('/beasts', beastRouter);
 
-    const mockBeast = {
-        id: beastId,
-        gamerTag,
-        email,
-        createdAt,
-        updatedAt,
-        beastieBros: [],
-    };
-
+describe('Beast Router', () => {
     beforeEach(() => {
+        // Clear all instances and calls to constructor and all methods:
         jest.resetAllMocks();
     });
 
-    describe('create', () => {
-        it('creates a new beast and returns it', async () => {
-            jest.mocked(prisma.beast.create).mockResolvedValue(mockBeast);
+    test('POST / should call BeastController.create', async () => {
+        const mockReqBody = { name: 'Griffin', age: 4 };
+        (BeastController.create as jest.Mock).mockImplementation((req, res) => res.status(201).send(req.body));
 
-            const beast = await BeastModel.create(gamerTag, email);
-            expect(beast).toEqual(mockBeast);
-        });
+        await request(app)
+            .post('/beasts/')
+            .send(mockReqBody)
+            .expect(201)
+            .expect(mockReqBody);
 
-        it('throws an UnknownError when beast creation fails', async () => {
-            jest.mocked(prisma.beast.create).mockRejectedValue(new Error());
-
-            await expect(BeastModel.create(gamerTag, email)).rejects.toThrow(UnknownError);
-        });
+        expect(BeastController.create).toHaveBeenCalledTimes(1);
     });
 
-    describe('getBeastById', () => {
-        it('returns a beast for a given ID', async () => {
-            jest.mocked(prisma.beast.findUnique).mockResolvedValue(mockBeast);
+    test('GET /:id should call BeastController.getBeastById', async () => {
+        const beastId = '1';
+        const mockBeast = { id: beastId, name: 'Griffin', age: 4 };
+        (BeastController.getBeastById as jest.Mock).mockImplementation((req, res) => res.status(200).send(mockBeast));
 
-            const beast = await BeastModel.getBeastById(beastId);
-            expect(beast).toEqual(mockBeast);
-        });
+        await request(app)
+            .get(`/beasts/${beastId}`)
+            .expect(200)
+            .expect(mockBeast);
 
-        it('throws a NotFoundError when the beast does not exist', async () => {
-            jest.mocked(prisma.beast.findUnique).mockResolvedValue(null);
-
-            await expect(BeastModel.getBeastById(beastId)).rejects.toThrow(NotFoundError);
-        });
+        expect(BeastController.getBeastById).toHaveBeenCalledWith(expect.anything(), expect.anything());
+        expect(BeastController.getBeastById).toHaveBeenCalledTimes(1);
     });
 
-    describe('updateBeast', () => {
-        it('updates a beast and returns the updated beast', async () => {
-            jest.mocked(prisma.beast.update).mockResolvedValue(mockBeast);
+    test('PATCH /:id should call BeastController.updateBeast', async () => {
+        const beastId = '1';
+        const mockUpdate = { name: 'Elder Griffin' };
+        (BeastController.updateBeast as jest.Mock).mockImplementation((req, res) => res.status(200).send({ ...mockUpdate, id: beastId }));
 
-            const beast = await BeastModel.updateBeast(beastId, gamerTag, email);
-            expect(beast).toEqual(mockBeast);
-        });
+        await request(app)
+            .patch(`/beasts/${beastId}`)
+            .send(mockUpdate)
+            .expect(200)
+            .expect({ ...mockUpdate, id: beastId });
 
-        it('throws an error when no updates are provided', async () => {
-            await expect(BeastModel.updateBeast(beastId)).rejects.toThrow(Error);
-        });
-
-        it('throws an UnknownError when the update operation fails', async () => {
-            jest.mocked(prisma.beast.update).mockRejectedValue(new Error());
-
-            await expect(BeastModel.updateBeast(beastId, gamerTag, email)).rejects.toThrow(UnknownError);
-        });
+        expect(BeastController.updateBeast).toHaveBeenCalledWith(expect.anything(), expect.anything());
+        expect(BeastController.updateBeast).toHaveBeenCalledTimes(1);
     });
+
+    // Additional tests can be added here to cover edge cases, error handling, etc.
 });

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import BeastModel from '../models/beast';
-import { CustomError } from '../models/errors';
+import { CustomError, NotFoundError } from '../models/errors';
 
 /**
  * BeastController class, handles requests for beasts
@@ -35,12 +35,18 @@ export default class BeastController {
             const { id } = req.params;
             if (!Number.isNaN(parseInt(id, 10))) {
                 beast = await BeastModel.getBeastById(parseInt(id, 10));
+
+                // If no beast is found, throw NotFoundError
+                if (!beast) {
+                    throw new NotFoundError('Beast not found');
+                }
+
+                res.status(200).json({ message: 'Successfully retrieved', data: beast });
             } else {
                 // Handle the case where id is not provided as a numerical string
                 // Need better error handling or sanitization here imo
                 res.status(400).json({ error: 'Invalid ID format' });
             }
-            res.status(200).json({ message: 'Successfully retrieved', data: beast });
         } catch (error: unknown) {
             if (error instanceof CustomError) {
                 res.status(error.statusCode).json({ error: error.message });
