@@ -33,13 +33,8 @@ export default class BeastController {
         let beast = null;
         try {
             const { id } = req.params;
-            if (!Number.isNaN(parseInt(id, 10))) {
-                beast = await BeastModel.getBeastById(parseInt(id, 10));
-            } else {
-                // Handle the case where id is not provided as a numerical string
-                // Need better error handling or sanitization here imo
-                res.status(400).json({ error: 'Invalid ID format' });
-            }
+
+            beast = await BeastModel.getBeastById(parseInt(id, 10));
             res.status(200).json({ message: 'Successfully retrieved', data: beast });
         } catch (error: unknown) {
             if (error instanceof CustomError) {
@@ -57,12 +52,6 @@ export default class BeastController {
         try {
             const { gamerTag, email } = req.body;
             const { id } = req.params;
-
-            if (Number.isNaN(parseInt(id, 10))) {
-                // Handle the case where id is not provided as a numerical string
-                // Need better error handling or sanitization here imo
-                res.status(400).json({ error: 'Invalid ID format' });
-            }
 
             const beast = await
             BeastModel.updateBeast(parseInt(id, 10), gamerTag, email);
