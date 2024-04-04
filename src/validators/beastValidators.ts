@@ -30,7 +30,7 @@ body('email')
  * Input validation checks for updating a beast
  */
 export const validationForUpdateBeast = () => [body('gamerTag')
-    .optional({ checkFalsy: true })
+    .optional({ values: 'falsy' })
     .isString()
     .withMessage('GamerTag must be a string')
     .bail()
@@ -43,7 +43,7 @@ export const validationForUpdateBeast = () => [body('gamerTag')
     .matches(/^[a-zA-Z0-9_.]+$/)
     .withMessage('GamerTag contains invalid characters'),
 body('email')
-    .optional({ checkFalsy: true })
+    .optional({ values: 'falsy' })
     .isString()
     .withMessage('Email must be a string')
     .bail()
