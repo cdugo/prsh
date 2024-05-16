@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 
 import BeastController from '../controller/beast';
 import { validateId, validationForCreateBeast, validationForUpdateBeast } from '../validators/beastValidators';
@@ -10,13 +10,13 @@ router.post(
     '/',
     validationForCreateBeast(),
     validate,
-    async (req: express.Request, res: express.Response) => BeastController.create(req, res),
+    async (req: Request, res: Response) => BeastController.create(req, res),
 );
 router.get(
     '/:id',
     validateId(),
     validate,
-    async (req: express.Request, res: express.Response) => BeastController.getBeastById(req, res),
+    async (req: Request, res: Response) => BeastController.getBeastById(req, res),
 );
 router.patch(
     '/:id',
