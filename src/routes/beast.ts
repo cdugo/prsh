@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-
 import BeastController from '../controller/beast';
 import { validateId, validationForCreateBeast, validationForUpdateBeast } from '../validators/beastValidators';
 import { validate } from '../validators/validator';
@@ -23,7 +22,7 @@ router.patch(
     validationForUpdateBeast(),
     validateId(),
     validate,
-    async (req: express.Request, res: express.Response) => BeastController.updateBeast(req, res),
+    async (req: Request, res: Response) => BeastController.updateBeast(req, res),
 );
 
 export default router;
