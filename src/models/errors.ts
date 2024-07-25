@@ -82,9 +82,12 @@ export function isErrorWithTarget(error: unknown): error is Prisma.PrismaClientK
  * @param error The error to check
  * @returns True if the error is a PrismaClientKnownRequestError and has the meta field
  */
-export function doesErrorContainMeta(error: unknown): error is Prisma.PrismaClientKnownRequestError {
-    return error instanceof Prisma.PrismaClientKnownRequestError
-         && typeof (error as any).meta === 'object';
+export function doesErrorContainMeta(error: unknown): error is Prisma.PrismaClientKnownRequestError & { meta: Record<string, unknown> } {
+    return (
+        error instanceof Prisma.PrismaClientKnownRequestError
+        && error.meta !== null
+        && typeof error.meta === 'object'
+    );
 }
 
 /**
