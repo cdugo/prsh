@@ -1,7 +1,7 @@
 import { Beast, Prisma } from '@prisma/client';
 import prisma from '../db/init';
 import {
-    handleDatabaseError, isErrorWithTarget,
+    handleDatabaseError,
     NotFoundError, UnknownError, UnprocessableEntityError,
 } from './errors';
 
@@ -100,16 +100,7 @@ export default class BeastModel {
      */
     private static handleErrors(error: unknown): Error {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (isErrorWithTarget(error)) {
-                handleDatabaseError(error);
-                // Had to do this here, in the case where the query parameter (id for example)
-                // does not exist, it is a PrismaClientKnownRequestError, but does not have a target
-                // therefore the error does got handled smoothly, need to find a better way to handle this
-            } else if (error.code === 'P2025') {
-                throw new NotFoundError('Target not found');
-            } else {
-                throw new UnknownError(error.message);
-            }
+            handleDatabaseError(error);
         } else if (error instanceof Prisma.PrismaClientValidationError) {
             throw new UnprocessableEntityError(error.message);
         } else {
