@@ -1,7 +1,7 @@
 import { Beast, Prisma } from '@prisma/client';
 import prisma from '../db/init';
 import {
-    handleDatabaseError, isErrorWithTarget,
+    handleDatabaseError,
     NotFoundError, UnknownError, UnprocessableEntityError,
 } from './errors';
 
@@ -100,11 +100,7 @@ export default class BeastModel {
      */
     private static handleErrors(error: unknown): Error {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (isErrorWithTarget(error)) {
-                handleDatabaseError(error);
-            } else {
-                throw new UnknownError(error.message);
-            }
+            handleDatabaseError(error);
         } else if (error instanceof Prisma.PrismaClientValidationError) {
             throw new UnprocessableEntityError(error.message);
         } else {
