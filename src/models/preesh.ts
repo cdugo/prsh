@@ -103,13 +103,11 @@ export default class PreeshModel {
     /**
      * Get preeshes for a specific beast
      * @param beastId ID of the beast
-     * @param type 'authored' or 'received'
      * @param page Page number (starts from 1)
      * @param pageSize Number of items per page
      */
     public static async getPreeshesForBeast(
         beastId: number,
-        type: 'authored' | 'received',
         page: number = 1,
         pageSize: number = 20,
     ): Promise<{ preeshes: Preesh[], totalCount: number }> {
@@ -117,7 +115,12 @@ export default class PreeshModel {
             const skip = (page - 1) * pageSize;
             const [preeshes, totalCount] = await prisma.$transaction([
                 prisma.preesh.findMany({
-                    where: type === 'authored' ? { authorId: beastId } : { receiverId: beastId },
+                    where: {
+                        OR: [
+                            { authorId: beastId },
+                            { receiverId: beastId },
+                        ],
+                    },
                     skip,
                     take: pageSize,
                     orderBy: { createdAt: 'desc' },
@@ -129,10 +132,16 @@ export default class PreeshModel {
                                 author: true,
                             },
                         },
+                        prees: true,
                     },
                 }),
                 prisma.preesh.count({
-                    where: type === 'authored' ? { authorId: beastId } : { receiverId: beastId },
+                    where: {
+                        OR: [
+                            { authorId: beastId },
+                            { receiverId: beastId },
+                        ],
+                    },
                 }),
             ]);
 
