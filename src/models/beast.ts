@@ -14,19 +14,39 @@ export default class BeastModel {
      * @param gamerTag Unique gamerTag (username)
      * @param email Unique email
      */
-    public static async create(gamerTag: string, email: string): Promise<Beast> {
+    public static async findOrCreateByAppleId(appleId: string, email: string): Promise<Beast> {
         try {
-            return await prisma.beast.create({
-                data: {
-                    gamerTag,
-                    email,
-                },
+            let beast = await prisma.beast.findUnique({
+                where: { appleId },
+            });
+
+            if (!beast) {
+                const tempGamerTag = `User${Math.floor(Math.random() * 10000)}`;
+                beast = await prisma.beast.create({
+                    data: {
+                        appleId,
+                        email,
+                        gamerTag: tempGamerTag,
+                    },
+                });
+            }
+
+            return beast;
+        } catch (error: unknown) {
+            BeastModel.handleErrors(error);
+        }
+        throw new UnknownError('An unexpected error occurred');
+    }
+
+    public static async findByEmail(email: string): Promise<Beast | null> {
+        try {
+            return await prisma.beast.findUnique({
+                where: { email },
             });
         } catch (error: unknown) {
             BeastModel.handleErrors(error);
         }
-        // this won't ever get hit, but eslint doesn't like when its not here for some reason lol
-        throw new UnknownError('An unexpected error occurred');
+        return null;
     }
 
     /**

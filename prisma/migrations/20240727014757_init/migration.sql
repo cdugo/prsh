@@ -8,6 +8,7 @@ CREATE TABLE "Beast" (
     "email" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "appleId" TEXT,
 
     CONSTRAINT "Beast_pkey" PRIMARY KEY ("id")
 );
@@ -49,6 +50,9 @@ CREATE UNIQUE INDEX "Beast_gamerTag_key" ON "Beast"("gamerTag");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Beast_email_key" ON "Beast"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Beast_appleId_key" ON "Beast"("appleId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_prees_AB_unique" ON "_prees"("A", "B");
